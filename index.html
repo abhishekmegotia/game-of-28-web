@@ -3,18 +3,22 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Game of 28</title>
+    <title>Game of 28 | Card Games</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
   </head>
   <body>
+    <div id="bg-effect"></div>
     <div id="unity-container" class="unity-desktop">
       <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
       <div id="unity-loading-bar">
         <div id="unity-logo"></div>
+        <div id="game-title">GAME OF 28</div>
+        <div id="game-subtitle">Card Games Collection</div>
         <div id="unity-progress-bar-empty">
           <div id="unity-progress-bar-full"></div>
         </div>
+        <div id="loading-text">LOADING</div>
       </div>
       <div id="unity-warning"> </div>
       <div id="unity-footer">
@@ -68,20 +72,25 @@
       canvas.className = "unity-mobile";
 
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Lower resolution on mobile for performance
         // config.devicePixelRatio = 1;
       }
 
       document.querySelector("#unity-loading-bar").style.display = "block";
 
+      var loadingText = document.querySelector("#loading-text");
+
       var script = document.createElement("script");
       script.src = loaderUrl;
       script.onload = () => {
         createUnityInstance(canvas, config, (progress) => {
-          document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
+          var pct = Math.round(100 * progress);
+          document.querySelector("#unity-progress-bar-full").style.width = pct + "%";
+          if (loadingText) loadingText.textContent = pct < 100 ? "LOADING " + pct + "%" : "STARTING...";
               }).then((unityInstance) => {
                 document.querySelector("#unity-loading-bar").style.display = "none";
                 document.querySelector("#unity-footer").style.display = "none";
+                var bg = document.querySelector("#bg-effect");
+                if (bg) bg.style.display = "none";
               }).catch((message) => {
                 alert(message);
               });
